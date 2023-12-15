@@ -659,9 +659,13 @@ modelo_cart_depresion_mb <- rpart(formula = Depresion_cat ~. , data = df_entrena
 #print(paste("Resumen del modelo para", 'Depresion'))
 #print(head(summary(modelo_cart_depresion_mb)))
 
+
+
+```
+```{r plot mb}
+
 #Imprimimos el arbol
 rpart.plot(modelo_cart_depresion_mb)
-
 ```
 
 Vemos que con maxdepth y minbucket el árbol no cambia. Veamos qué pasa si modificamos la complejidad.

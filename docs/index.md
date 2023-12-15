@@ -1097,6 +1097,7 @@ Probemos ahora un segundo modelo agregando algunos hiperparámetros:
     #Imprimimos el arbol
     rpart.plot(modelo_cart_depresion_md)
 
+![](index_files/figure-markdown_strict/modelo%20minbucket%20maxdepth-1.png)
 
     #Fit 2
     modelo_cart_depresion_mb <- rpart(formula = Depresion_cat ~. , data = df_entrenamiento_depresion, method = "class", control = rpart.control(minbucket = 2))
@@ -1108,7 +1109,7 @@ Probemos ahora un segundo modelo agregando algunos hiperparámetros:
     #Imprimimos el arbol
     rpart.plot(modelo_cart_depresion_mb)
 
-![](index_files/figure-markdown_strict/modelo%20minbucket%20maxdepth-1.png)
+![](index_files/figure-markdown_strict/plot%20mb-1.png)
 
 Vemos que con maxdepth y minbucket el árbol no cambia. Veamos qué pasa
 si modificamos la complejidad.
