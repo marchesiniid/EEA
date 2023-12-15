@@ -667,6 +667,7 @@ rpart.plot(modelo_cart_depresion_mb)
 Vemos que con maxdepth y minbucket el árbol no cambia. Veamos qué pasa si modificamos la complejidad.
 
 
+#### Variando complejidad
 
 ```{r modelo complejidad}
 
@@ -674,8 +675,8 @@ Vemos que con maxdepth y minbucket el árbol no cambia. Veamos qué pasa si modi
 modelo_cart_depresion_cp <- rpart(formula = Depresion_cat ~. , data = df_entrenamiento_depresion, method = "class", control = rpart.control(cp = 0.002))
 
 #Resumen del modelo
-print(paste("Resumen del modelo para", 'Depresion'))
-print(head(summary(modelo_cart_depresion_cp)))
+#print(paste("Resumen del modelo para", 'Depresion'))
+#print(head(summary(modelo_cart_depresion_cp)))
 
 #Imprimimos el arbol
 rpart.plot(modelo_cart_depresion_cp)
@@ -691,8 +692,8 @@ Veamos cuándo aparece nuestra nueva clase en las predicciones.
 #Fit
 modelo_cart_depresion_cp <- rpart(formula = Depresion_cat ~. , data = df_entrenamiento_depresion, method = "class", control = rpart.control(cp = 0.0004))
 
-#Rsumen
-print(paste("Resumen del modelo para", 'Depresion'))
+#Resumen
+#print(paste("Resumen del modelo para", 'Depresion'))
 #print(head(summary(modelo_cart_depresion_cp)))
 
 #Grafico
@@ -726,6 +727,9 @@ barplot(importancia_variables$importancia, names.arg = importancia_variables$var
 Podemos ver que la variable más importante es EmotionalStability, le sigue Conscientiousness y Extraversion. Esto tiene sentido ya que son las variables que aparecieron primero en los splits del arbol. 
 
 ¿Qué pasa si agregamos más variables?
+
+
+#### Modelo con más variables
 
 ```{r Mas variables}
 variables_predictoras_mas <- c("Extraversion", "Agreeableness", "Conscientiousness", "EmotionalStability", "Openness", "education", "urban", "gender", "engnat", "hand", "religion", "orientation", "race", "voted", "married", "familysize", "Depresion_cat")
@@ -774,7 +778,7 @@ tabla_variables %>%
 Efectivamente podemos ver que las variables de personalidad son las más usadas por nuestro modelo para poder predecir, y luego aparecen el tamaño del grupo familiar, la orientación sexual, el nivel educativo alcanzado, entre otras, pero con mucha menos frecuencia.
 
 
-### Poda del árbol
+#### Poda del árbol
 
 Cuando tenemos árboles que son complejos tenemos mayor posibilidad de overfitear. Para esto, podemos realizar poda del árbol, que consiste en eliminar ramas (nodos y hojas) para reducir su complejidad. Para nuestro caso, se eliminan las ramas o sub-árboles que no traen diferencias significativas, es decir que menor reducción de impureza proporcionan. 
 
@@ -785,7 +789,7 @@ Si bien la poda puede ser Pre-Pruning o Post-Pruning, en nuestro caso haremos Po
 
 modelo_cart_depresion_cp_mas_pruned <- prune(modelo_cart_depresion_cp_mas, cp = 0.00195)
 
-print(summary(modelo_cart_depresion_cp_mas_pruned))
+#print(summary(modelo_cart_depresion_cp_mas_pruned))
 
 rpart.plot(modelo_cart_depresion_cp_mas_pruned)
 
