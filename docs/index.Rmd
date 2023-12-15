@@ -878,3 +878,174 @@ tabla_resultados
 Con esto podemos ver algunas cosas:
 
 En primer lugar, ningun modelo es bueno en términos prácticos, ya que estamos hablando de una precisión menor al 60%. Además, tenemos 3 modelos que no logran predecir todos los casos. Dos de ellos solo predicen 2 de las clases (Normal y Severo), 1 de ellos predice también sobre Moderado, y solo 1, el árbol sin cortar, logra predecir todas las clases, aunque con poca precision. 
+
+
+
+### Apéndice: (Modelos Ansiedad y Estrés)
+
+A continuación dejamos la aplicación para modelos de Ansiedad y Estrés. En este caso, vamos a hacerlo directamente con todas las variables (rasgos de personalidad y datos personales)
+
+
+
+
+#### Ansiedad
+
+
+```{r Modelo Ansiedad}
+
+variables_predictoras_ansiedad <- c("Extraversion", "Agreeableness", "Conscientiousness", "EmotionalStability", "Openness", "education", "urban", "gender", "engnat", "hand", "religion", "orientation", "race", "voted", "married", "familysize", "Ansiedad_cat")
+
+
+df_entrenamiento_ansiedad <- df_entrenamiento[variables_predictoras_ansiedad]
+
+#Fit
+modelo_cart_ansiedad <- rpart(formula = Ansiedad_cat ~. , data = df_entrenamiento_ansiedad, method = "class", control = rpart.control(cp = 0.00039))
+
+#print(paste("Resumen del modelo para", 'Depresion'))
+#print(summary(modelo_cart_depresion_cp_mas))
+
+#Grafico arbol
+rpart.plot(modelo_cart_ansiedad)
+
+#Importancia
+importancia_variables_ansiedad<- data.frame(variable = names(modelo_cart_ansiedad$variable.importance),
+                                     importancia = modelo_cart_ansiedad$variable.importance)
+
+importancia_variables_ansiedad <- importancia_variables_ansiedad[order(-importancia_variables_ansiedad$importancia), ]
+
+barplot(importancia_variables_ansiedad$importancia,  
+        col = "orange", main = "Importancia de Variables", 
+        xlab = "Variables", ylab = "Importancia") 
+
+#Acomodamos nombres
+axis(1, at = seq_along(importancia_variables_ansiedad$variable),
+     labels = importancia_variables_ansiedad$variable, las = 2, cex.names= 0.4)
+
+
+```
+
+En principio armamos un árbol saturado para luego podarlo. Pero es interesante que entre las variables importantes, si bien Estabilidad Emocional sigue siendo definitivamente la más importante, aparece la variable de Married en tercer lugar por encima de otros tres rasgos de personalidad. 
+
+
+```{r Uso de variables ansiedad}
+
+tabla_variables_ansiedad <- as.data.frame(modelo_cart_ansiedad$frame$var[modelo_cart_ansiedad$frame$var != "<leaf>"])
+names(tabla_variables_ansiedad) <- c("variable")
+tabla_variables_ansiedad %>%
+  group_by(variable) %>%
+  summarise(n = n()) %>%
+  mutate(freq = round(n / sum(n), 2)) %>%
+  arrange(-n)
+
+```
+
+Sin embargo, Married no parece ser una columna tan usada por el modelo, y nuevamente tenemos 4 de los 5 rasgos de personalidad en los primeros lugares. 
+
+##### Arbol ansiedad podado
+
+```{r Arbol ansiedad podado}
+
+modelo_Cart_ansiedad_pruned <- prune(modelo_cart_ansiedad, cp = 0.002)
+
+rpart.plot(modelo_Cart_ansiedad_pruned)
+#Importancia
+importancia_variables_ansiedad_pruned <- data.frame(variable = names(modelo_Cart_ansiedad_pruned$variable.importance),
+                                     importancia = modelo_Cart_ansiedad_pruned$variable.importance)
+
+importancia_variables_ansiedad_pruned <- importancia_variables_ansiedad_pruned[order(-importancia_variables_ansiedad_pruned$importancia), ]
+
+barplot(importancia_variables_ansiedad_pruned$importancia,  
+        col = "orange", main = "Importancia de Variables", 
+        xlab = "Variables", ylab = "Importancia") 
+
+#Acomodamos nombres
+axis(1, at = seq_along(importancia_variables_ansiedad$variable),
+     labels = importancia_variables_ansiedad$variable, las = 2, cex.names= 0.4)
+```
+
+
+El árbol resultante al podarlo hacia un cp = 0.002  resulta muy similar al que vimos anteriormente de Depresion. 
+
+
+
+
+
+#### Stress
+
+
+```{r Modelo Stress}
+
+variables_predictoras_stress <- c("Extraversion", "Agreeableness", "Conscientiousness", "EmotionalStability", "Openness", "education", "urban", "gender", "engnat", "hand", "religion", "orientation", "race", "voted", "married", "familysize", "Stress_cat")
+
+
+df_entrenamiento_stress <- df_entrenamiento[variables_predictoras_stress]
+
+#Fit
+modelo_cart_stress <- rpart(formula = Stress_cat ~. , data = df_entrenamiento_stress, method = "class", control = rpart.control(cp = 0.00039))
+
+
+
+#Grafico arbol
+rpart.plot(modelo_cart_stress)
+
+#Importancia
+importancia_variables_stress<- data.frame(variable = names(modelo_cart_stress$variable.importance),
+                                     importancia = modelo_cart_stress$variable.importance)
+
+importancia_variables_stress <- importancia_variables_stress[order(-importancia_variables_stress$importancia), ]
+
+barplot(importancia_variables_stress$importancia,  
+        col = "orange", main = "Importancia de Variables", 
+        xlab = "Variables", ylab = "Importancia") 
+
+#Acomodamos nombres
+axis(1, at = seq_along(importancia_variables_stress$variable),
+     labels = importancia_variables_stress$variable, las = 2, cex.names= 0.4)
+
+
+```
+
+En principio armamos un árbol saturado para luego podarlo. No se ve que haya diferencias grandes con la importancia de variables de Depresión ni Ansiedad, nuevamente las variables más fuertes parecen ser los rasgos de personalidad.  
+
+
+```{r Uso de variables}
+
+tabla_variables_stress <- as.data.frame(modelo_cart_stress$frame$var[modelo_cart_stress$frame$var != "<leaf>"])
+names(tabla_variables_stress) <- c("variable")
+tabla_variables_stress %>%
+  group_by(variable) %>%
+  summarise(n = n()) %>%
+  mutate(freq = round(n / sum(n), 2)) %>%
+  arrange(-n)
+
+```
+
+Aquí es interesante que Amabilidad y Escrupulosidad son utilizadas más veces para hacer divisiones en el árbol. 
+ 
+
+##### Arbol Stress podado
+
+```{r Arbol stress podado}
+
+modelo_Cart_stress_pruned <- prune(modelo_cart_stress, cp = 0.002)
+
+rpart.plot(modelo_Cart_stress_pruned)
+#Importancia
+importancia_variables_stress_pruned <- data.frame(variable = names(modelo_Cart_stress_pruned$variable.importance),
+                                     importancia = modelo_Cart_stress_pruned$variable.importance)
+
+importancia_variables_stress_pruned <- importancia_variables_stress_pruned[order(-importancia_variables_stress_pruned$importancia), ]
+
+barplot(importancia_variables_stress_pruned$importancia,  
+        col = "orange", main = "Importancia de Variables", 
+        xlab = "Variables", ylab = "Importancia") 
+
+#Acomodamos nombres
+axis(1, at = seq_along(importancia_variables_stress_pruned$variable),
+     labels = importancia_variables_stress_pruned$variable, las = 2, cex.names= 0.4)
+```
+
+
+
+Vemos que al podar el árbol a cp 0.002 directamente tenemos, para Stress, dos nodos terminales y una simple división en base a Estabilidad Emocional, por lo que nuevamente esta variable es un fuerte predictor para el caso binario. 
+
