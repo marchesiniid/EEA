@@ -645,8 +645,8 @@ Probemos ahora un segundo modelo agregando algunos hiperparámetros:
 modelo_cart_depresion_md <- rpart(formula = Depresion_cat ~. , data = df_entrenamiento_depresion, method = "class", control = rpart.control(maxdepth = 10))
 
 #Resumen del modelo
-print(paste("Resumen del modelo para", 'Depresion'))
-print(head(summary(modelo_cart_depresion_md)))
+#print(paste("Resumen del modelo para", 'Depresion'))
+#print(head(summary(modelo_cart_depresion_md)))
 
 #Imprimimos el arbol
 rpart.plot(modelo_cart_depresion_md)
@@ -656,8 +656,8 @@ rpart.plot(modelo_cart_depresion_md)
 modelo_cart_depresion_mb <- rpart(formula = Depresion_cat ~. , data = df_entrenamiento_depresion, method = "class", control = rpart.control(minbucket = 2))
 
 #Resumen del modelo
-print(paste("Resumen del modelo para", 'Depresion'))
-print(head(summary(modelo_cart_depresion_mb)))
+#print(paste("Resumen del modelo para", 'Depresion'))
+#print(head(summary(modelo_cart_depresion_mb)))
 
 #Imprimimos el arbol
 rpart.plot(modelo_cart_depresion_mb)
