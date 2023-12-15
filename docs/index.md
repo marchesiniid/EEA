@@ -1154,14 +1154,33 @@ Veamos cuándo aparece nuestra nueva clase en las predicciones.
 
 ![](index_files/figure-markdown_strict/Clases-1.png)
 
+    plotcp(modelo_cart_depresion_cp)
+
+![](index_files/figure-markdown_strict/Clases-2.png)
+
 Aquí vemos que con un cp = 0.0004 aparecen nuevas clases, pero tenemos
 muchos más nodos terminales y un árbol considerablemente más complejo
-que el anterior, donde sacrificamos explicabilidad.
+que el anterior, donde sacrificamos explicabilidad. Si nos fijamos en el
+error estimado de generalización en base a CP, parecería que a partir de
+cp=0.0042 los valores de error son muy similares, entonces podemos
+considerar quedarnos con el árbol más chico de ese rango que sería un
+árbol de tamaño 7 y cp= 0.0042
+
+    modelo_cart_depresion_cp_min <- rpart(formula = Depresion_cat ~. , data = df_entrenamiento_depresion, method = "class", control = rpart.control(cp = 0.0042))
+
+    #Resumen
+    #print(paste("Resumen del modelo para", 'Depresion'))
+    #print(head(summary(modelo_cart_depresion_cp)))
+
+    #Grafico
+    rpart.plot(modelo_cart_depresion_cp_min)
+
+![](index_files/figure-markdown_strict/Arbol%20mejor%20-%20mas%20chico-1.png)
 
 Veamos entonces qué variables son las más importantes en este modelo.
 
-    importancia_variables <- data.frame(variable = names(modelo_cart_depresion_cp$variable.importance),
-                                         importancia = modelo_cart_depresion_cp$variable.importance)
+    importancia_variables <- data.frame(variable = names(modelo_cart_depresion_cp_min$variable.importance),
+                                         importancia = modelo_cart_depresion_cp_min$variable.importance)
 
     #Ordenamos importancia
     importancia_variables <- importancia_variables[order(-importancia_variables$importancia), ]
