@@ -583,18 +583,15 @@ variables_predictoras <- c("Extraversion", "Agreeableness", "Conscientiousness",
 
 # Definir las variables objetivo
 variables_objetivo <- c("Depresion_cat", "Ansiedad_cat", "Stress_cat")
-
-
-# Seleccionar solo las columnas de interés
 df_modelo <- df_filtrado[, c(variables_predictoras, variables_objetivo, "ID")]
 
-# Dividir el conjunto de datos en entrenamiento y prueba
+# Dividir en train y test
 indice_entrenamiento <- createDataPartition(df_modelo$Depresion, p = 0.7, list = FALSE)
 
-# Conjunto de entrenamiento
+#Train
 df_entrenamiento <- df_modelo[indice_entrenamiento, ]
 
-# Conjunto de prueba
+#Test
 df_prueba <- df_modelo[-indice_entrenamiento, ]
 
 
@@ -627,11 +624,11 @@ df_entrenamiento_ansiedad <- df_entrenamiento[variables_predictoras_ansiedad]
 # Entrenar el modelo en el conjunto de entrenamiento
 modelo_cart_depresion <- rpart(formula = Depresion_cat ~. , data = df_entrenamiento_depresion, method = 'class')
 
-# Imprimir el resumen del modelo
+# Resumen del modelo
 print(paste("Resumen del modelo para", 'Depresion'))
 print(summary(modelo_cart_depresion))
 
-# Visualizar el árbol de decisión (puedes ajustar los parámetros según tus preferencias)
+# Visualizar el árbol de decisión 
 rpart.plot(modelo_cart_depresion)
 
 
@@ -642,16 +639,45 @@ Vemos que, sin pasarle ningún hiperparámetro, el árbol decide únicamente en 
 
 Probemos ahora un segundo modelo agregando algunos hiperparámetros:
 
-```{r modelo maxdepth}
+```{r modelo minbucket maxdepth}
 
-# Entrenar el modelo en el conjunto de entrenamiento
+# Fit
+modelo_cart_depresion_md <- rpart(formula = Depresion_cat ~. , data = df_entrenamiento_depresion, method = "class", control = rpart.control(maxdepth = 10))
+
+#Resumen del modelo
+print(paste("Resumen del modelo para", 'Depresion'))
+print(head(summary(modelo_cart_depresion_md)))
+
+#Imprimimos el arbol
+rpart.plot(modelo_cart_depresion_md)
+
+
+#Fit 2
+modelo_cart_depresion_mb <- rpart(formula = Depresion_cat ~. , data = df_entrenamiento_depresion, method = "class", control = rpart.control(minbucket = 2))
+
+#Resumen del modelo
+print(paste("Resumen del modelo para", 'Depresion'))
+print(head(summary(modelo_cart_depresion_mb)))
+
+#Imprimimos el arbol
+rpart.plot(modelo_cart_depresion_mb)
+
+```
+
+Vemos que con maxdepth y minbucket el árbol no cambia. Veamos qué pasa si modificamos la complejidad.
+
+
+
+```{r modelo complejidad}
+
+# Fit
 modelo_cart_depresion_cp <- rpart(formula = Depresion_cat ~. , data = df_entrenamiento_depresion, method = "class", control = rpart.control(cp = 0.002))
 
-# Imprimir el resumen del modelo
+#Resumen del modelo
 print(paste("Resumen del modelo para", 'Depresion'))
-print(summary(modelo_cart_depresion_cp))
+print(head(summary(modelo_cart_depresion_cp)))
 
-# Visualizar el árbol de decisión (puedes ajustar los parámetros según tus preferencias)
+#Imprimimos el arbol
 rpart.plot(modelo_cart_depresion_cp)
 
 ```
@@ -662,14 +688,14 @@ Veamos cuándo aparece nuestra nueva clase en las predicciones.
 
 ```{r Clases}
 
-# Entrenar el modelo en el conjunto de entrenamiento
+#Fit
 modelo_cart_depresion_cp <- rpart(formula = Depresion_cat ~. , data = df_entrenamiento_depresion, method = "class", control = rpart.control(cp = 0.0004))
 
-# Imprimir el resumen del modelo
+#Rsumen
 print(paste("Resumen del modelo para", 'Depresion'))
-print(summary(modelo_cart_depresion_cp))
+#print(head(summary(modelo_cart_depresion_cp)))
 
-# Visualizar el árbol de decisión (puedes ajustar los parámetros según tus preferencias)
+#Grafico
 rpart.plot(modelo_cart_depresion_cp)
 
 
@@ -686,10 +712,10 @@ Veamos entonces qué variables son las más importantes en este modelo.
 importancia_variables <- data.frame(variable = names(modelo_cart_depresion_cp$variable.importance),
                                      importancia = modelo_cart_depresion_cp$variable.importance)
 
-# Ordenar el dataframe por importancia en orden descendente
+#Ordenamos importancia
 importancia_variables <- importancia_variables[order(-importancia_variables$importancia), ]
 
-# Crear el gráfico de barras
+#Grafico de barras
 barplot(importancia_variables$importancia, names.arg = importancia_variables$variable, 
         col = "orange", main = "Importancia de Variables", 
         xlab = "Variables", ylab = "Importancia", cex.names = 0.60)
@@ -699,7 +725,7 @@ barplot(importancia_variables$importancia, names.arg = importancia_variables$var
 
 Podemos ver que la variable más importante es EmotionalStability, le sigue Conscientiousness y Extraversion. Esto tiene sentido ya que son las variables que aparecieron primero en los splits del arbol. 
 
-Qué pasa si agregamos más variables?
+¿Qué pasa si agregamos más variables?
 
 ```{r Mas variables}
 variables_predictoras_mas <- c("Extraversion", "Agreeableness", "Conscientiousness", "EmotionalStability", "Openness", "education", "urban", "gender", "engnat", "hand", "religion", "orientation", "race", "voted", "married", "familysize", "Depresion_cat")
@@ -707,29 +733,26 @@ variables_predictoras_mas <- c("Extraversion", "Agreeableness", "Conscientiousne
 
 df_entrenamiento_depresion_mas <- df_entrenamiento[variables_predictoras_mas]
 
-# Entrenar el modelo en el conjunto de entrenamiento
-modelo_cart_depresion_cp_mas <- rpart(formula = Depresion_cat ~. , data = df_entrenamiento_depresion_mas, method = "class", control = rpart.control(cp = 0.0001))
+#Fit
+modelo_cart_depresion_cp_mas <- rpart(formula = Depresion_cat ~. , data = df_entrenamiento_depresion_mas, method = "class", control = rpart.control(cp = 0.00039))
 
-# Imprimir el resumen del modelo
-print(paste("Resumen del modelo para", 'Depresion'))
-print(summary(modelo_cart_depresion_cp_mas))
+#print(paste("Resumen del modelo para", 'Depresion'))
+#print(summary(modelo_cart_depresion_cp_mas))
 
-# Visualizar el árbol de decisión (puedes ajustar los parámetros según tus preferencias)
+#Grafico arbol
 rpart.plot(modelo_cart_depresion_cp_mas)
 
-
+#Importancia
 importancia_variables_mas <- data.frame(variable = names(modelo_cart_depresion_cp_mas$variable.importance),
                                      importancia = modelo_cart_depresion_cp_mas$variable.importance)
 
-# Ordenar el dataframe por importancia en orden descendente
 importancia_variables_mas <- importancia_variables_mas[order(-importancia_variables_mas$importancia), ]
 
-# Crear el gráfico de barras
 barplot(importancia_variables_mas$importancia,  
         col = "orange", main = "Importancia de Variables", 
         xlab = "Variables", ylab = "Importancia") 
 
-# Rotar los nombres en el eje X después de crear el gráfico
+#Acomodamos nombres
 axis(1, at = seq_along(importancia_variables_mas$variable),
      labels = importancia_variables_mas$variable, las = 2, cex.names= 0.4)
 
@@ -760,7 +783,7 @@ Si bien la poda puede ser Pre-Pruning o Post-Pruning, en nuestro caso haremos Po
 
 ```{r Poda del arbol}
 
-modelo_cart_depresion_cp_mas_pruned <- prune(modelo_cart_depresion_cp_mas, cp = 0.0065)
+modelo_cart_depresion_cp_mas_pruned <- prune(modelo_cart_depresion_cp_mas, cp = 0.00195)
 
 print(summary(modelo_cart_depresion_cp_mas_pruned))
 
@@ -776,9 +799,7 @@ tabla_variables %>%
   arrange(-n)
 ```
 
-De esta manera obtenemos un árbol podado a una complejidad 0.00065. 
-
-
+De esta manera obtenemos un árbol podado a una complejidad 0.00195 
 
 
 
