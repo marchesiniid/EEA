@@ -1,8 +1,11 @@
 ---
 title: "TP2 - CART"
-author: "Ismael Marchesini"
+author: "Ismael Marchesini - Juan Emmanuel Pengue"
 date: "2023-12-12"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    theme: united
 ---
 
 ```{r setup, include=FALSE}
@@ -20,14 +23,14 @@ library(tidyverse)
 
 El Inventario de Depresión Ansiedad y Estrés (Depression Anxiety and Stress Scale - DASS) es un set the 3 escalas auto-administrables diseñadas para medir los estados emocionales negativos de depresión, ansiedad y estrés. Cada escala individual consta de 14 items, siendo un total de 42 para todo el cuestionario. A su vez, cada escala está dividida en sub-escalas de 2 a 5 items de contenido similar. (... continuar texto https://www2.psy.unsw.edu.au/dass/over.htm)
 
-## Cargamos Datos:
+### Cargamos Datos:
 
 ```{r pressure, echo=FALSE}
 df <- read.csv('C:/Users/Administrator/Documents/MaestriaDataMining/EEA/TP2/data.csv', header = TRUE, sep="\t")
 head(df)
 ```
 
-## Sobre el tratamiento de los datos: 
+### Sobre el tratamiento de los datos: 
 
 Para nuestro caso de estudio, nos interesa el scoring total en cada escala (Depresión, Ansiedad y Estrés respectivamente). Si bien los autores plantean que no son independientes, sino que están hasta cierto punto correlacionadas, vamos a evaluar el grado de severidad para cada caso. Dado que nuestro dataset contiene el score individual marcado para cada pregunta, calcularemos tres columnas adicionales con el score total de cada estado respectivamente. Asimismo, como en este caso los valores van de 1 a 4, y en el DASS original se puntuan de 0 a 3, vamos a restar 1 a todos los valores. 
 
@@ -176,29 +179,6 @@ cat("Número de filas después de limpiar:", nrow(df_filtrado), "\n")
 
 
 ```
-
-
-
-## EDA - Analisis Exploratorio
-
-
-```{r EDA 1}
-
-columnas_personales <- c("education", "urban", "gender", "engnat", "age", "hand", "religion", "orientation", "race", "voted", "married", "familysize")
-
-columnas_duracion <- c("testelapse", "surveyelapse")
-
-columnas_interesantes <- c("Depresion","Ansiedad","Stress",  "Extraversion", "Agreeableness",  "Conscientiousness", "EmotionalStability", "Openness") 
-
-cat("Summary interesantes: ")
-summary(df_filtrado[, columnas_interesantes])
-cat("Summary duracion: ")
-summary(df_filtrado[,columnas_duracion])
-cat("Summary personales: ")
-summary(df_filtrado[,columnas_personales])
-
-```
-
 ### Duracion
 
 Estas medidas nos permiten observar que hay datos máximos que llaman la atención. 
@@ -210,7 +190,7 @@ columnas_duracion <- c("testelapse", "sum_T_elapsed", "surveyelapse")
 
 df_filtrado$sum_T_elapsed <- rowSums(df_filtrado[, grep("^Q\\d+E$", colnames(df_filtrado))])
 df_filtrado$sum_T_elapsed <- df_filtrado$sum_T_elapsed / 1000
-df_filtrado[,columnas_duracion]
+head(df_filtrado[,columnas_duracion])
 summary(df_filtrado[,columnas_duracion])
 ```
 
@@ -313,7 +293,28 @@ ggplot(df_filtrado, aes(x = surveyelapse)) +
 
 
 
-### EDA - Resto de variables 
+
+
+## EDA - Analisis Exploratorio
+
+
+```{r EDA 1}
+
+columnas_personales <- c("education", "urban", "gender", "engnat", "age", "hand", "religion", "orientation", "race", "voted", "married", "familysize")
+
+columnas_duracion <- c("testelapse", "surveyelapse")
+
+columnas_interesantes <- c("Depresion","Ansiedad","Stress",  "Extraversion", "Agreeableness",  "Conscientiousness", "EmotionalStability", "Openness") 
+
+cat("Summary interesantes: ")
+summary(df_filtrado[, columnas_interesantes])
+cat("Summary duracion: ")
+summary(df_filtrado[,columnas_duracion])
+cat("Summary personales: ")
+summary(df_filtrado[,columnas_personales])
+
+```
+
 
 
 Verificaremos las variables que seran las target: Depresion, Ansiedad y Stress
@@ -375,7 +376,7 @@ ggplot(df_filtrado, aes(x = factor(1), y = Stress)) +
 
 Se puede observar que el Stress tiene una distribución que se asemeja un poco a una normal a primera vista, mientras que la Depresión tiene una distribución considerablemente más uniforme, y la Ansiedad se asemeja un poco a una Chi-cuadrado. 
 
-Veamos ahora nuestras variables de Personalidad
+Veamos ahora nuestras variables de Personalidad:
 
 
 ```{r Big Five}
@@ -492,7 +493,13 @@ Se observa que la estabilidad emocional tiene una correlacion negativa bastante 
 
 
 
-## Factorizacion de columnas
+
+## Modelo CART
+
+### Preparación adicional de datos
+
+
+Vamos a factorizar columnas que usaremos más adelante, que corresponden a las preguntas de índole personal y demográfica.
 
 ```{r Factorizacion}
 
@@ -516,9 +523,6 @@ str(df_filtrado[columnas_personales])
 
 
 ```
-
-## Modelo CART
-
 
 ### Preparamos nuestro train y test. 
 
@@ -554,6 +558,9 @@ df_filtrado <- df_filtrado %>%
 
 
 ```
+Verificamos las proporciones de la severidad para Depresión.
+
+
 ```{r Proporciones}
 
 prop_target <- prop.table(table(df_filtrado$Depresion_cat))
@@ -592,8 +599,6 @@ df_prueba <- df_modelo[-indice_entrenamiento, ]
 
 
 ### Modelo para Depresion
-
-
 
 
 ```{r Depresion}
@@ -771,12 +776,15 @@ tabla_variables %>%
 De esta manera obtenemos un árbol podado a una complejidad 0.00065. 
 
 
-### Métricas de CART
 
 
-Vamos a comparar las métricas de CART con otros modelos.
 
-#### Modelo regresión logística
+
+
+
+### Métricas y comparación con otros modelos 
+
+Vamos a generar modelos de Naive Bayes y Regresion Logistica Multinomial 
 
 ```{r NB y SVM}
 
