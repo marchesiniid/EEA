@@ -11,6 +11,9 @@
     -   [Preparamos nuestro train y
         test.](#preparamos-nuestro-train-y-test.)
     -   [Modelo para Depresion](#modelo-para-depresion)
+        -   [Variando complejidad](#variando-complejidad)
+        -   [Modelo con más variables](#modelo-con-más-variables)
+        -   [Poda del árbol](#poda-del-árbol)
     -   [Métricas y comparación con otros
         modelos](#métricas-y-comparación-con-otros-modelos)
 
