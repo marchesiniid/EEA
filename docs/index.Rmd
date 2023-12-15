@@ -2,10 +2,13 @@
 title: "TP2 - CART"
 author: "Ismael Marchesini - Juan Emmanuel Pengue"
 date: "2023-12-12"
-output: 
+output:
+  md_document:
+    toc: true
+    toc_depth: 3
   html_document:
     toc: true
-    theme: united
+    toc_depth: 3
 ---
 
 ```{r setup, include=FALSE}
