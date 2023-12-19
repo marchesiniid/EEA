@@ -50,16 +50,21 @@ Ten Item Personality Inventory (TIPI):
 ##### Bibliografía adicional
 ● Allen, T. A., Carey, B. E., McBride, C., Bagby, R. M., DeYoung, C. G., & Quilty, L. C. (2018). Big
 Five aspects of personality interact to predict depression. Journal of Personality, 86(4), 714–725.
+
 ● Bunevicius, A., Katkute, A., & Bunevicius, R. (2008). Symptoms of anxiety and depression in
 medical students and in humanities students: Relationship with big-five personality dimensions
 and vulnerability to stress. International Journal of Social Psychiatry, 54(6), 494–501.
+
 ● Gosling, S. D., Rentfrow, P. J., & Swann, W. B. (2003). A very brief measure of the Big-Five
 personality domains. Journal of Research in Personality, 37(6), 504–528.
+
 ● James, G., Witten, D., Hastie, T., & Tibshirani, R. (2023). An Introduction to Statistical Learning
 with Applications in R Second Edition.
+
 ● John, O. P., & Srivastava, S. (1999). The Big Five trait taxonomy: History, measurement, and
 theoretical perspectives. In L. A. Pervin, & O. P. John (Eds.), Handbook of personality: Theory
 and research (pp. 102–138). New York: Guilford Press.
+
 ● Koorevaar, A. M. L., Comijs, H. C., Dhondt, A. D. F., van Marwijk, H. W. J., van der Mast, R. C.,
 Naarding, P., Voshaar, R. C. O., & Stek, M. L. (2013). Big Five personality and depression
 diagnosis, s
