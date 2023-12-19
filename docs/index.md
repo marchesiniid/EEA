@@ -4,6 +4,9 @@
         datos:](#sobre-el-tratamiento-de-los-datos)
     -   [Duracion](#duracion)
 -   [EDA - Analisis Exploratorio](#eda---analisis-exploratorio)
+    -   [Variables Target](#variables-target)
+    -   [Variables de interés
+        predictivo](#variables-de-interés-predictivo)
     -   [Correlaciones](#correlaciones)
 -   [Modelo CART](#modelo-cart)
     -   [Preparación adicional de
@@ -585,6 +588,76 @@ quitar outliers.
 
 ## EDA - Analisis Exploratorio
 
+### Variables Target
+
+Verificaremos las variables que seran las target: Depresion, Ansiedad y
+Stress
+
+Se puede observar que el Stress tiene una distribución que se asemeja un
+poco a una normal a primera vista, mientras que la Depresión tiene una
+distribución considerablemente más uniforme, y la Ansiedad se asemeja un
+poco a una Chi-cuadrado.
+
+Veamos ahora nuestras variables de Personalidad:
+
+    # Definir colores para cada variable
+    color_depresion <- "green"
+    color_ansiedad <- "orange"
+    color_stress <- "purple"
+    colores_depresion <- c("green", "yellow", "orange", "red")
+
+    ggplot(df_filtrado, aes(x = factor(1), y = Depresion)) +
+      geom_boxplot(fill = color_depresion, color = "black") +
+      labs(title = "Boxplot de Depresion",
+           x = "",
+           y = "Depresion") +
+      theme_minimal()
+
+![](index_files/figure-markdown_strict/EDA%200_1-1.png)
+
+    # Crear el gráfico utilizando ggplot2 con un margen más amplio en el eje x
+    ggplot(df_filtrado, aes(x = Depresion, fill = factor(Depresion_cat))) +
+      geom_histogram(color = "black", binwidth = 1, position = "identity") +
+      
+      # Personalizar colores
+      scale_fill_manual(values = colores_depresion) +
+      
+      labs(title = "Histograma de Depresion por Niveles",
+           x = "Depresion",
+           y = "Frecuencia") +
+      
+      theme_minimal()
+
+![](index_files/figure-markdown_strict/EDA%200_1-2.png)
+
+    ggplot(df_filtrado, aes(x = Ansiedad, fill = factor(Ansiedad_cat))) +
+      geom_histogram(color = "black", binwidth = 1, position = "identity") +
+      
+      # Personalizar colores
+      scale_fill_manual(values = colores_depresion) +
+      
+      labs(title = "Histograma de Ansiedad por Niveles",
+           x = "Ansiedad",
+           y = "Frecuencia") +
+      
+      theme_minimal()
+
+![](index_files/figure-markdown_strict/EDA%200_1-3.png)
+
+    ggplot(df_filtrado, aes(x = Stress, fill = factor(Stress_cat))) +
+      geom_histogram(color = "black", binwidth = 1, position = "identity") +
+      
+      # Personalizar colores
+      scale_fill_manual(values = colores_depresion) +
+      
+      labs(title = "Histograma de Stress por Niveles",
+           x = "Stress",
+           y = "Frecuencia") +
+      
+      theme_minimal()
+
+![](index_files/figure-markdown_strict/EDA%200_1-4.png)
+
     columnas_personales <- c("education", "urban", "gender", "engnat", "age", "hand", "religion", "orientation", "race", "voted", "married", "familysize")
 
     columnas_duracion <- c("testelapse", "surveyelapse")
@@ -654,77 +727,10 @@ quitar outliers.
     ##  3rd Qu.:60.00   3rd Qu.:2.000   3rd Qu.:1.000   3rd Qu.: 4.000  
     ##  Max.   :70.00   Max.   :2.000   Max.   :3.000   Max.   :99.000
 
-Verificaremos las variables que seran las target: Depresion, Ansiedad y
-Stress
+### Variables de interés predictivo
 
-    # Definir colores para cada variable
-    color_depresion <- "green"
-    color_ansiedad <- "orange"
-    color_stress <- "purple"
-
-    # Crear histograma y boxplot para la variable de Depresion
-    ggplot(df_filtrado, aes(x = Depresion)) +
-      geom_histogram(fill = color_depresion, color = "black", bins = 21) +
-      labs(title = "Histograma de Depresion",
-           x = "Depresion",
-           y = "Frecuencia") +
-      theme_minimal()
-
-![](index_files/figure-markdown_strict/EDA%20Variables%20target-1.png)
-
-    ggplot(df_filtrado, aes(x = factor(1), y = Depresion)) +
-      geom_boxplot(fill = color_depresion, color = "black") +
-      labs(title = "Boxplot de Depresion",
-           x = "",
-           y = "Depresion") +
-      theme_minimal()
-
-![](index_files/figure-markdown_strict/EDA%20Variables%20target-2.png)
-
-    # Crear histograma y boxplot para la variable de Ansiedad
-    ggplot(df_filtrado, aes(x = Ansiedad)) +
-      geom_histogram(fill = color_ansiedad, color = "black", bins = 21) +
-      labs(title = "Histograma de Ansiedad",
-           x = "Ansiedad",
-           y = "Frecuencia") +
-      theme_minimal()
-
-![](index_files/figure-markdown_strict/EDA%20Variables%20target-3.png)
-
-    ggplot(df_filtrado, aes(x = factor(1), y = Ansiedad)) +
-      geom_boxplot(fill = color_ansiedad, color = "black") +
-      labs(title = "Boxplot de Ansiedad",
-           x = "",
-           y = "Ansiedad") +
-      theme_minimal()
-
-![](index_files/figure-markdown_strict/EDA%20Variables%20target-4.png)
-
-    # Crear histograma y boxplot para la variable de Stress
-    ggplot(df_filtrado, aes(x = Stress)) +
-      geom_histogram(fill = color_stress, color = "black", bins = 21) +
-      labs(title = "Histograma de Stress",
-           x = "Stress",
-           y = "Frecuencia") +
-      theme_minimal()
-
-![](index_files/figure-markdown_strict/EDA%20Variables%20target-5.png)
-
-    ggplot(df_filtrado, aes(x = factor(1), y = Stress)) +
-      geom_boxplot(fill = color_stress, color = "black") +
-      labs(title = "Boxplot de Stress",
-           x = "",
-           y = "Stress") +
-      theme_minimal()
-
-![](index_files/figure-markdown_strict/EDA%20Variables%20target-6.png)
-
-Se puede observar que el Stress tiene una distribución que se asemeja un
-poco a una normal a primera vista, mientras que la Depresión tiene una
-distribución considerablemente más uniforme, y la Ansiedad se asemeja un
-poco a una Chi-cuadrado.
-
-Veamos ahora nuestras variables de Personalidad:
+Vamos a analizar aquí nuestras variables de interés predictivos, es
+decir, las 5 dimensiones o rasgos de personalidad.
 
     # Definir colores para cada variable de personalidad
     color_extraversion <- "skyblue"
