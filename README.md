@@ -33,21 +33,24 @@ La estructura de este trabajo consiste en una serie de videos explicativos apoya
 #### Bibliografía
 
 ##### Dataset
-Dataset utilizado: https://www.kaggle.com/datasets/lucasgreenwell/depression-anxiety-stress-scales-responses 
+
+ https://www.kaggle.com/datasets/lucasgreenwell/depression-anxiety-stress-scales-responses 
 
 
 ##### Escalas de medición
-Depression Anxiety and Stress Scales:
-●  https://www2.psy.unsw.edu.au/dass/ 
 
-● https://static1.squarespace.com/static/5934abbb1b631ba4718d4c2d/t/604d2386f36aae7a6f01fb67/1615668113669/DASS+23+Information+Sheet.2.25.21.docx.pdf
+DASS:
+https://www2.psy.unsw.edu.au/dass/ 
+
+Severidad de DASS:
+https://static1.squarespace.com/static/5934abbb1b631ba4718d4c2d/t/604d2386f36aae7a6f01fb67/1615668113669/DASS+23+Information+Sheet.2.25.21.docx.pdf
 
 Ten Item Personality Inventory (TIPI): 
-
-● https://gosling.psy.utexas.edu/scales-weve-developed/ten-item-personality-measure-tipi/
+https://gosling.psy.utexas.edu/scales-weve-developed/ten-item-personality-measure-tipi/
 
 
 ##### Bibliografía adicional
+
 ● Allen, T. A., Carey, B. E., McBride, C., Bagby, R. M., DeYoung, C. G., & Quilty, L. C. (2018). Big
 Five aspects of personality interact to predict depression. Journal of Personality, 86(4), 714–725.
 
